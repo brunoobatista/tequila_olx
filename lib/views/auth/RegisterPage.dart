@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:olx_tequila/core/AppColors.dart';
 import 'package:olx_tequila/models/ReturnMessage.dart';
-import 'package:olx_tequila/models/UserTequila.dart';
+import 'package:olx_tequila/modelview/UserTequila.dart';
 import 'package:olx_tequila/repositories/FirebaseAuthRepository.dart';
 import 'package:olx_tequila/views/widgets/BtnElevetedCustomWidget.dart';
 import 'package:olx_tequila/views/widgets/TextFormFieldCustomWidget.dart';

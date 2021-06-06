@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:olx_tequila/core/AppColors.dart';
-import 'package:olx_tequila/models/UserTequila.dart';
+import 'package:olx_tequila/modelview/UserTequila.dart';
 import 'package:olx_tequila/repositories/FirebaseAuthRepository.dart';
 import 'package:olx_tequila/services/HomeService.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -16,6 +16,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   final pageViewController = PageController();
   final FirebaseAuthRepository firebaseRepository = FirebaseAuthRepository();
   final HomeService homeService = HomeService();
+  String _title = 'Tequila Business';
 
   UserTequila userTequila = UserTequila.logOff();
 
@@ -24,7 +25,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   _escolhaMenuItem(String itemEscolhido) async {
     switch (itemEscolhido.parse) {
       case ItemMenus.meus_anuncios:
-        Navigator.pushReplacementNamed(context, '/meus-anuncios');
+        Navigator.pushNamed(context, '/meus-anuncios');
         break;
       case ItemMenus.cadastrar:
         Navigator.pushNamed(context, '/registrar');
@@ -33,14 +34,22 @@ class _HomePageWidgetState extends State<HomePageWidget> {
         Navigator.pushNamed(context, '/login');
         break;
       case ItemMenus.deslogar:
-        await firebaseRepository.logout();
-        Navigator.pushReplacementNamed(context, '/home');
+        userTequila = await firebaseRepository.logout();
+        setState(() {
+          itensMenu = homeService.getMenuItens(userTequila.isLogged);
+          _title = 'Tequila Business';
+        });
+        // Navigator.pushReplacementNamed(context, '/home');
         break;
     }
   }
 
   verifyUserIsLogged() async {
     userTequila = await firebaseRepository.getCurrentUser();
+    if (userTequila.isLogged)
+      setState(() {
+        _title = 'Bruno Batista';
+      });
     itensMenu = homeService.getMenuItens(userTequila.isLogged);
   }
 
@@ -54,7 +63,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tequilla'),
+        title: Text(_title),
         backgroundColor: AppColors.pPurple,
         // automaticallyImplyLeading: true,
         actions: [

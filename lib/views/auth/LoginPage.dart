@@ -17,9 +17,7 @@ class LoginPage extends StatelessWidget {
       await firebaseAuthRepository
           .login(_controllerEmail.text, _controllerPassword.text)
           .then((value) {
-        print(value.getMessage);
         if (!value.isError) {
-          print('@@@@@@@@@@@@@');
           Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
         }
       }).catchError((error) {

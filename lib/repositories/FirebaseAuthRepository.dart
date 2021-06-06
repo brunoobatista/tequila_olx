@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:olx_tequila/models/ReturnMessage.dart';
-import 'package:olx_tequila/models/UserTequila.dart';
+import 'package:olx_tequila/modelview/UserTequila.dart';
 
 class FirebaseAuthRepository {
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -36,10 +36,11 @@ class FirebaseAuthRepository {
     return returnMessage;
   }
 
-  Future<void> logout() async {
+  Future<UserTequila> logout() async {
     print('Deslogando...');
     await auth.signOut();
     print('Deslogado.');
+    return UserTequila.logOff();
   }
 
   Future verifyUserIsLogged() async {}

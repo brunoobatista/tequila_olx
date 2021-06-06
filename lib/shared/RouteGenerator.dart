@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:olx_tequila/views/SplashPage.dart';
+import 'package:olx_tequila/views/anuncios/MeusAnunciosWidget.dart';
+import 'package:olx_tequila/views/anuncios/NovoAnuncioWidget.dart';
 import 'package:olx_tequila/views/auth/LoginPage.dart';
 import 'package:olx_tequila/views/auth/RegisterPage.dart';
 import 'package:olx_tequila/views/home/HomePageWidget.dart';
@@ -17,6 +19,10 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => LoginPage());
       case '/registrar':
         return MaterialPageRoute(builder: (_) => RegisterPage());
+      case '/meus-anuncios':
+        return MaterialPageRoute(builder: (_) => MeusAnunciosWidget());
+      case '/novo-anuncio':
+        return MaterialPageRoute(builder: (_) => NovoAnuncioWidget());
       default:
         return _erroRoute();
     }

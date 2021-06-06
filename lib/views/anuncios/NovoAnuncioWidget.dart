@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import 'package:olx_tequila/core/AppPadding.dart';
 import 'package:olx_tequila/views/anuncios/widgets/ListViewCustomWidget.dart';
 import 'package:olx_tequila/views/widgets/BtnElevetedCustomWidget.dart';
+import 'package:olx_tequila/views/widgets/DropdownCustomWidget.dart';
 
 class NovoAnuncioWidget extends StatefulWidget {
   const NovoAnuncioWidget({Key? key}) : super(key: key);
@@ -15,6 +17,20 @@ class NovoAnuncioWidget extends StatefulWidget {
 class _NovoAnuncioWidgetState extends State<NovoAnuncioWidget> {
   final _formKey = GlobalKey<FormState>();
   final List<File> _listImages = [];
+  final List<DropdownMenuItem<String>> _estadosDropItens = [];
+  String? _currentValueEstados;
+  _initEstados() {
+    _estadosDropItens.add(DropdownMenuItem(child: Text('SP'), value: 'sp'));
+    _estadosDropItens.add(DropdownMenuItem(child: Text('PR'), value: 'pr'));
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _initEstados();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,7 +78,37 @@ class _NovoAnuncioWidgetState extends State<NovoAnuncioWidget> {
               ),
               Row(
                 children: [
-                  Text('Estado'),
+                  // Expanded(
+                  //   child: Padding(
+                  //     padding: EdgeInsets.all(AppPadding.all8),
+                  //     child: DropdownButtonFormField(
+                  //       hint: Text('Estado'),
+                  //       value: _currentValueEstados,
+                  //       items: _estadosDropItens,
+                  //       validator:
+                  //           RequiredValidator(errorText: 'Campo obrigatório'),
+                  //       onChanged: (value) {
+                  //         setState(() {
+                  //           _currentValueEstados = value;
+                  //         });
+                  //       },
+                  //       // onTap: this.onTap,
+                  //     ),
+                  //   ),
+                  // ),
+                  DropdownCustomWidget(
+                    hint: 'Estado',
+                    menuItens: _estadosDropItens,
+                    currentValue: _currentValueEstados,
+                    onTap: (currentValue) {
+                      // setState(() {
+                      //   _currentValueEstados = currentValue;
+                      // });
+                      print(currentValue);
+                    },
+                    validator:
+                        RequiredValidator(errorText: 'Campo obrigatório'),
+                  ),
                   Text('Categoria'),
                 ],
               ),

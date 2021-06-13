@@ -6,22 +6,18 @@ class DropdownCustomWidget extends StatelessWidget {
   final List<DropdownMenuItem<dynamic>> menuItens;
   final dynamic currentValue;
   final FieldValidator validator;
-  final Function(dynamic currentValue) onTap;
+  final Function(dynamic currentValue) onChange;
+  final Function(dynamic currentValue) onSaved;
   final String hint;
-  DropdownCustomWidget(
-      {Key? key,
-      required this.hint,
-      required this.menuItens,
-      required this.currentValue,
-      required this.onTap,
-      required this.validator})
-      : super(key: key);
-
-  _emptyValidation() {
-    return null;
-  }
-
-  _executeFunction(value) {}
+  DropdownCustomWidget({
+    Key? key,
+    required this.hint,
+    required this.menuItens,
+    required this.currentValue,
+    required this.onChange,
+    required this.onSaved,
+    required this.validator,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,12 +26,15 @@ class DropdownCustomWidget extends StatelessWidget {
         padding: EdgeInsets.all(AppPadding.all8),
         child: DropdownButtonFormField<dynamic>(
           hint: Text(this.hint),
+          style: TextStyle(color: Colors.black, fontSize: 20),
           value: this.currentValue,
           items: this.menuItens,
           validator: this.validator,
-          // onTap: this.onTap,
           onChanged: (value) {
-            this.onTap(value);
+            this.onChange(value);
+          },
+          onSaved: (value) {
+            this.onSaved(value);
           },
         ),
       ),

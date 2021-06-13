@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 class UserTequila {
-  String? id;
+  String id;
   String? email;
   String? password;
   String? name;
   bool _logged = false;
 
   UserTequila({
-    this.id,
+    this.id = '',
     required this.email,
     required this.password,
     required this.name,
@@ -19,13 +19,14 @@ class UserTequila {
   UserTequila.logOn({required this.id, required this.email}) {
     this._logged = true;
   }
-  UserTequila.logOff() {
+  UserTequila.logOff({this.id = ''}) {
     this._logged = false;
   }
 
   bool get isLogged => this._logged;
 
   bool get hasId => this.id != null;
+  String get getId => this.id;
 
   UserTequila copyWith({
     String? id,

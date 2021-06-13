@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static final Color purble1 = Color(0xFF7b1fa2);
-  static final Color purple2 = Color(0xFFB61ABA);
-  static final Color purple3 = Color(0xFFB0196C);
-  static final Color purple4 = Color(0xFF5E1ABA);
-  static final Color purple5 = Color(0xFF3019B0);
+  // colors primary
+  static final Color pRed = Color(0xFFd32f2f);
+  static final Color pRedLight = Color(0xFFff6659);
+  static final Color pRedDark = Color(0xFF9a0007);
+
+  // colors secondary
+  static final Color sDeepYellow = Color(0xFFf57f17);
+  static final Color sDeepYellowLight = Color(0xFFffb04c);
+  static final Color sDeepYellowDark = Color(0xFFbc5100);
 
   // colors primary
   static final Color pPurple = Color(0xFF9c27b0);

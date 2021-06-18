@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:olx_tequila/core/AppColors.dart';
+import 'package:olx_tequila/views/anuncios/widgets/CardAnuncioWidget.dart';
 
 class MeusAnunciosWidget extends StatefulWidget {
   const MeusAnunciosWidget({Key? key}) : super(key: key);
@@ -23,7 +24,11 @@ class _MeusAnunciosWidgetState extends State<MeusAnunciosWidget> {
           Navigator.pushNamed(context, '/novo-anuncio');
         },
       ),
-      body: Container(),
+      body: ListView.builder(
+          itemCount: 4,
+          itemBuilder: (_, index) {
+            return CardAnuncioWidget();
+          }),
     );
   }
 }

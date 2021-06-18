@@ -2,21 +2,23 @@ import 'dart:io';
 
 import 'package:olx_tequila/models/Anuncio.dart';
 import 'package:olx_tequila/modelview/UserTequila.dart';
+import 'package:olx_tequila/repositories/AnuncioRepository.dart';
 import 'package:olx_tequila/repositories/FirebaseAuthRepository.dart';
 import 'package:olx_tequila/repositories/FirebaseDBRepository.dart';
 import 'package:olx_tequila/repositories/StorageRepository.dart';
 
 class AnuncioService {
   StorageRepository _storage = StorageRepository();
-  FirebaseDBRepository _db = FirebaseDBRepository();
+  FirebaseDBRepository _dbRepository = FirebaseDBRepository();
   FirebaseAuthRepository auth = FirebaseAuthRepository();
+  AnuncioRepository _repository = AnuncioRepository();
 
   final String collection = 'anuncios';
 
   Future<Anuncio> create(Anuncio anuncio, List<File> listImages) async {
     UserTequila user = await auth.getCurrentUser();
     if (!user.isLogged) throw Exception('Usuário precisa estar logado');
-    anuncio.id = _db.createIdTemp(
+    anuncio.id = _dbRepository.createIdTemp(
       collection: collection,
       docChild: user.getId,
       collChild: 'meus_anuncios',
@@ -25,13 +27,11 @@ class AnuncioService {
         images: listImages, path: collection, subPath: anuncio.id);
 
     anuncio.fotos = links;
-    await _db.save(
-      model: anuncio,
-      collection: 'anuncios',
-      idOwner: user.getId,
-      collChild: 'meus_anuncios',
-      docChild: anuncio.id,
+    await _repository.save(
+      anuncio: anuncio,
+      idUser: user.getId,
     );
+
     return anuncio;
   }
 }

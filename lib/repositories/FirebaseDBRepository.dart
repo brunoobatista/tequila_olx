@@ -5,7 +5,7 @@ import 'package:olx_tequila/models/interfaces/Model.dart';
 class FirebaseDBRepository {
   FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  createIdTemp({
+  String createIdTemp({
     required String collection,
     String? collChild,
     String? docChild,

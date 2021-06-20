@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:olx_tequila/models/Anuncio.dart';
 import 'package:olx_tequila/repositories/FirebaseDBRepository.dart';
@@ -59,5 +62,32 @@ class AnuncioRepository {
     } on Exception catch (e) {
       throw e.toString();
     }
+  }
+
+  Future<List<Anuncio>> getAnunciosByUser({required String idUser}) async {
+    List<Anuncio> anuncios = [];
+    QuerySnapshot snapshot = await _db
+        .collection('meus_anuncios')
+        .doc(idUser)
+        .collection('anuncios')
+        .get();
+
+    List<String> ids = [];
+
+    for (DocumentSnapshot doc in snapshot.docs) {
+      ids.add(doc.id);
+    }
+
+    QuerySnapshot anunciosSnap =
+        await _db.collection('anuncios').where('id', whereIn: ids).get();
+
+    for (DocumentSnapshot doc in anunciosSnap.docs) {
+      var dado = doc.data();
+      Anuncio anuncio = Anuncio.fromJson(jsonEncode(dado));
+      anuncios.add(anuncio);
+    }
+    print('QUANTIDADE DE ANUNCIOS');
+    print(anuncios.length);
+    return anuncios;
   }
 }

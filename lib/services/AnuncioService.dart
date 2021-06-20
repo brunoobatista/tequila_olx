@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:olx_tequila/models/Anuncio.dart';
 import 'package:olx_tequila/modelview/UserTequila.dart';
 import 'package:olx_tequila/repositories/AnuncioRepository.dart';
@@ -33,5 +34,11 @@ class AnuncioService {
     );
 
     return anuncio;
+  }
+
+  Future<List<Anuncio>> getMeusAnuncios() async {
+    UserTequila user = await auth.getCurrentUser();
+    await _repository.getAnunciosByUser(idUser: user.id);
+    return [];
   }
 }

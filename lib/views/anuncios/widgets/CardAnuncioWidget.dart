@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:olx_tequila/core/AppColors.dart';
+import 'package:olx_tequila/models/Anuncio.dart';
 
 class CardAnuncioWidget extends StatelessWidget {
-  const CardAnuncioWidget({Key? key}) : super(key: key);
+  final Anuncio anuncio;
+  const CardAnuncioWidget({Key? key, required this.anuncio}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    print('CARD');
     return GestureDetector(
         onTap: () {},
         child: Card(
@@ -29,11 +32,11 @@ class CardAnuncioWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Console praistation asdasdasd',
+                          this.anuncio.titulo,
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
                         ),
-                        Text('R\$ 124565.55'),
+                        Text("R\$ ${this.anuncio.preco}"),
                       ],
                     ),
                   ),

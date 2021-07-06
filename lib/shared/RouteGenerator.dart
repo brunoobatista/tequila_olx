@@ -22,7 +22,7 @@ class RouteGenerator {
       case '/meus-anuncios':
         return MaterialPageRoute(builder: (_) => MeusAnunciosWidget());
       case '/novo-anuncio':
-        return MaterialPageRoute(builder: (_) => NovoAnuncioWidget());
+        return MaterialPageRoute(builder: (_) => NovoAnuncioWidget(obj: args));
       default:
         return _erroRoute();
     }

@@ -9,6 +9,7 @@ import 'package:olx_tequila/models/Anuncio.dart';
 import 'package:olx_tequila/models/Categoria.dart';
 import 'package:olx_tequila/repositories/FirebaseDBRepository.dart';
 import 'package:olx_tequila/services/AnuncioService.dart';
+import 'package:olx_tequila/utils/Converter.dart';
 import 'package:olx_tequila/utils/validators/RequiredValidatorCustomObject.dart';
 import 'package:olx_tequila/views/anuncios/widgets/ListViewCustomWidget.dart';
 import 'package:olx_tequila/views/widgets/BtnElevetedCustomWidget.dart';
@@ -16,7 +17,11 @@ import 'package:olx_tequila/views/widgets/DropdownCustomWidget.dart';
 import 'package:olx_tequila/views/widgets/TextFormFieldCustomWidget.dart';
 
 class NovoAnuncioWidget extends StatefulWidget {
-  const NovoAnuncioWidget({Key? key}) : super(key: key);
+  Function? function;
+  NovoAnuncioWidget({Key? key, Object? obj}) {
+    final args = obj as Map;
+    this.function = args['function'];
+  }
 
   @override
   _NovoAnuncioWidgetState createState() => _NovoAnuncioWidgetState();
@@ -68,6 +73,7 @@ class _NovoAnuncioWidgetState extends State<NovoAnuncioWidget> {
     await _anuncioService.create(anuncio, _listImages).then((value) {
       // novoAnuncio = value;
       Navigator.pop(context);
+      widget.function!();
     });
   }
 
@@ -179,6 +185,8 @@ class _NovoAnuncioWidgetState extends State<NovoAnuncioWidget> {
                     ],
                     // controller: _tituloController,
                     onSaved: (value) {
+                      print(value);
+                      print(Converter.fromBRLToDouble(value!));
                       anuncio.preco = value;
                     },
                     validator:

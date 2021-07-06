@@ -1,13 +1,14 @@
 import 'dart:convert';
 
 import 'package:olx_tequila/models/interfaces/Model.dart';
+import 'package:olx_tequila/utils/Converter.dart';
 
 class Anuncio implements Model {
   String? _id;
   String? _estado;
   String? _categoria;
   String? _titulo;
-  String? _preco;
+  double? _preco;
   String? _telefone;
   String? _descricao;
   List<String>? _fotos;
@@ -45,7 +46,11 @@ class Anuncio implements Model {
   set estado(value) => this._estado = value;
   set categoria(value) => this._categoria = value;
   set titulo(value) => this._titulo = value;
-  set preco(value) => this._preco = value;
+  set preco(value) {
+    if (value.runtimeType != double) value = Converter.fromBRLToDouble(value);
+    this._preco = value;
+  }
+
   set telefone(value) => this._telefone = value;
   set descricao(value) => this._descricao = value;
   set fotos(value) => this._fotos = value;

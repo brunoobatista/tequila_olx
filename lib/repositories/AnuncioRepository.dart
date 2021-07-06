@@ -77,17 +77,16 @@ class AnuncioRepository {
     for (DocumentSnapshot doc in snapshot.docs) {
       ids.add(doc.id);
     }
+    if (ids.isNotEmpty) {
+      QuerySnapshot anunciosSnap =
+          await _db.collection('anuncios').where('id', whereIn: ids).get();
 
-    QuerySnapshot anunciosSnap =
-        await _db.collection('anuncios').where('id', whereIn: ids).get();
-
-    for (DocumentSnapshot doc in anunciosSnap.docs) {
-      var dado = doc.data();
-      Anuncio anuncio = Anuncio.fromJson(jsonEncode(dado));
-      anuncios.add(anuncio);
+      for (DocumentSnapshot doc in anunciosSnap.docs) {
+        var dado = doc.data();
+        Anuncio anuncio = Anuncio.fromJson(jsonEncode(dado));
+        anuncios.add(anuncio);
+      }
     }
-    print('QUANTIDADE DE ANUNCIOS');
-    print(anuncios.length);
     return anuncios;
   }
 }

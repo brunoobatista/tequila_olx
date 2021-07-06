@@ -38,7 +38,8 @@ class AnuncioService {
 
   Future<List<Anuncio>> getMeusAnuncios() async {
     UserTequila user = await auth.getCurrentUser();
-    await _repository.getAnunciosByUser(idUser: user.id);
-    return [];
+    List<Anuncio> anuncios =
+        await _repository.getAnunciosByUser(idUser: user.id);
+    return anuncios;
   }
 }

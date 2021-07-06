@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:olx_tequila/core/AppColors.dart';
@@ -18,26 +19,26 @@ class _MeusAnunciosWidgetState extends State<MeusAnunciosWidget> {
   AnuncioService _service = AnuncioService();
   List<Anuncio> anuncios = [];
 
-  Future<Stream<List<Anuncio>>> _preencherMeusAnuncios() async {
-    print('ANTES DO STATE');
-    Stream<List<Anuncio>> anuncs = _service.getMeusAnuncios().asStream();
-    anuncs.listen((event) {
-      _controller.add(event);
-    });
-    print('DEPOIS DO STATE');
-    // setState(() {
-    //   anuncios = anuncs;
-    // });
-    print('DEPOIS DO STATE 2');
-    return anuncs;
+  Future<void> _preencherMeusAnuncios() async {
+    List<Anuncio> anuncs = await _service.getMeusAnuncios();
+    _controller.add(anuncs);
+    print(this._controller.stream.length);
+  }
+
+  void refreshData() {
+    _preencherMeusAnuncios();
   }
 
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
     _preencherMeusAnuncios();
-    print('INIT STATE');
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    this._controller.close();
+    super.dispose();
   }
 
   @override
@@ -51,73 +52,38 @@ class _MeusAnunciosWidgetState extends State<MeusAnunciosWidget> {
         foregroundColor: AppColors.pText,
         child: Icon(Icons.add),
         onPressed: () {
-          Navigator.pushNamed(context, '/novo-anuncio');
+          Navigator.pushNamed(context, '/novo-anuncio',
+              arguments: {'function': refreshData});
         },
       ),
-      body: StreamBuilder(
-        stream: _controller.stream,
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-            case ConnectionState.waiting:
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-              break;
-            case ConnectionState.active:
-            case ConnectionState.none:
-              if (!snapshot.hasData) return Text('Erro ao carregado os dados');
-              return ListView.builder(
-                itemCount: anuncios.length,
-                itemBuilder: (_, index) {
-                  print('CARREGOU LIST');
-                  return CardAnuncioWidget(
-                    anuncio: anuncios[index],
-                  );
-                },
-              );
-            default:
-              return Text('Erro ao carregar dados');
-          }
-        },
-      ),
+      body: streamBuilderWidget(),
+    );
+  }
+
+  Widget streamBuilderWidget() {
+    return StreamBuilder(
+      stream: _controller.stream,
+      builder: (context, AsyncSnapshot snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+          case ConnectionState.waiting:
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          case ConnectionState.done:
+          case ConnectionState.active:
+            return ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (_, index) {
+                return CardAnuncioWidget(
+                  anuncio: snapshot.data[index],
+                );
+              },
+            );
+          default:
+            return Text('Erro ao carregar dados');
+        }
+      },
     );
   }
 }
-
-// FutureBuilder<List<Anuncio>>(
-//         future: _preencherMeusAnuncios(),
-//         builder: (context, AsyncSnapshot snapshot) {
-//           if (!snapshot.hasData) {
-//             print('TA NO IFFFF');
-//             return Center(
-//               child: CircularProgressIndicator(),
-//             );
-//           } else {
-//             print('TA NO ELSE');
-//             List<Anuncio> an = snapshot.data;
-//             return Container(
-//               child: ListView.builder(
-//                 scrollDirection: Axis.vertical,
-//                 itemCount: an.length,
-//                 itemBuilder: (_, index) {
-//                   print('CARREGOU LIST');
-//                   return Text('teste');
-//                   // return CardAnuncioWidget(
-//                   //   anuncio: snapshot.data[index],
-//                   // );
-//                 },
-//               ),
-//             );
-//           }
-//         },
-//       ),
-
-// ListView.builder(
-//           itemCount: anuncios.length,
-//           itemBuilder: (_, index) {
-//             print('CARREGOU LIST');
-//             return CardAnuncioWidget(
-//               anuncio: anuncios[index],
-//             );
-//           }),

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:olx_tequila/core/AppColors.dart';
 import 'package:olx_tequila/models/Anuncio.dart';
+import 'package:olx_tequila/utils/Converter.dart';
 
 class CardAnuncioWidget extends StatelessWidget {
   final Anuncio anuncio;
-  const CardAnuncioWidget({Key? key, required this.anuncio}) : super(key: key);
+  final VoidCallback? onPressedRemove;
+  const CardAnuncioWidget(
+      {Key? key, required this.anuncio, this.onPressedRemove})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    print('CARD');
     return GestureDetector(
         onTap: () {},
         child: Card(
@@ -17,12 +20,12 @@ class CardAnuncioWidget extends StatelessWidget {
             child: Row(
               children: [
                 SizedBox(
-                  width: 120,
-                  height: 120,
-                  child: Container(
-                    color: Colors.orange,
-                  ),
-                ),
+                    width: 120,
+                    height: 120,
+                    child: Image.network(
+                      this.anuncio.fotos[0],
+                      fit: BoxFit.cover,
+                    )),
                 Expanded(
                   flex: 3,
                   child: Padding(
@@ -36,29 +39,31 @@ class CardAnuncioWidget extends StatelessWidget {
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
                         ),
-                        Text("R\$ ${this.anuncio.preco}"),
+                        Text(
+                            "R\$ ${Converter.fromDoubleToBRL(value: this.anuncio.preco)}"),
                       ],
                     ),
                   ),
                 ),
-                Expanded(
-                  flex: 1,
-                  child: TextButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all(AppColors.pRedLight),
-                      shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                if (this.onPressedRemove != null)
+                  Expanded(
+                    flex: 1,
+                    child: TextButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(AppColors.pRedLight),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                        ),
+                      ),
+                      onPressed: () {},
+                      child: Icon(
+                        Icons.delete,
+                        color: Colors.white,
                       ),
                     ),
-                    onPressed: () {},
-                    child: Icon(
-                      Icons.delete,
-                      color: Colors.white,
-                    ),
-                  ),
-                )
+                  )
               ],
             ),
           ),

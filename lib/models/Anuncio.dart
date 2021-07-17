@@ -12,6 +12,7 @@ class Anuncio implements Model {
   String? _telefone;
   String? _descricao;
   List<String>? _fotos;
+  DateTime? _createdAt;
 
   Anuncio({
     id,
@@ -22,15 +23,22 @@ class Anuncio implements Model {
     telefone,
     descricao,
     fotos,
+    createdAt,
   }) {
     this._id = id;
     this._estado = estado;
     this._categoria = categoria;
     this._titulo = titulo;
+    if (preco.runtimeType != double) preco = Converter.fromBRLToDouble(preco);
     this._preco = preco;
     this._telefone = telefone;
     this._descricao = descricao;
     this._fotos = fotos ?? [];
+    if (createdAt == null)
+      this._createdAt = DateTime.now();
+    else {
+      this._createdAt = DateTime.parse(createdAt);
+    }
   }
 
   get id => this._id;
@@ -41,6 +49,7 @@ class Anuncio implements Model {
   get telefone => this._telefone;
   get descricao => this._descricao;
   get fotos => this._fotos;
+  get createdAt => this._createdAt;
 
   set id(value) => this._id = value;
   set estado(value) => this._estado = value;
@@ -66,6 +75,7 @@ class Anuncio implements Model {
       'telefone': _telefone,
       'descricao': _descricao,
       'fotos': _fotos,
+      'created_at': _createdAt
     };
   }
 
@@ -78,6 +88,7 @@ class Anuncio implements Model {
       preco: map['preco'],
       telefone: map['telefone'],
       descricao: map['descricao'],
+      createdAt: map['created_at'],
       fotos: List<String>.from(map['fotos']),
     );
   }

@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:olx_tequila/models/Anuncio.dart';
 import 'package:olx_tequila/repositories/FirebaseDBRepository.dart';
 import 'package:olx_tequila/repositories/StorageRepository.dart';
+import 'package:olx_tequila/utils/FilterEncodeJson.dart';
 
 class AnuncioRepository {
   FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -55,7 +56,7 @@ class AnuncioRepository {
       DocumentReference docRef = _db
           .collection(myAnnouncement)
           .doc(idUser)
-          .collection('anuncios')
+          .collection(collection)
           .doc(idAnuncio);
       await docRef.set(Map<String, dynamic>());
       return docRef;
@@ -64,12 +65,27 @@ class AnuncioRepository {
     }
   }
 
+  Future<bool> remove(Anuncio anuncio, String idUser) async {
+    try {
+      await _db.collection(collection).doc(anuncio.id).delete();
+      await _db
+          .collection(myAnnouncement)
+          .doc(idUser)
+          .collection(collection)
+          .doc(anuncio.id)
+          .delete();
+    } on Exception catch (e) {
+      throw e.toString();
+    }
+    return true;
+  }
+
   Future<List<Anuncio>> getAnunciosByUser({required String idUser}) async {
     List<Anuncio> anuncios = [];
     QuerySnapshot snapshot = await _db
-        .collection('meus_anuncios')
+        .collection(myAnnouncement)
         .doc(idUser)
-        .collection('anuncios')
+        .collection(collection)
         .get();
 
     List<String> ids = [];
@@ -79,14 +95,36 @@ class AnuncioRepository {
     }
     if (ids.isNotEmpty) {
       QuerySnapshot anunciosSnap =
-          await _db.collection('anuncios').where('id', whereIn: ids).get();
+          await _db.collection(collection).where('id', whereIn: ids).get();
 
       for (DocumentSnapshot doc in anunciosSnap.docs) {
         var dado = doc.data();
-        Anuncio anuncio = Anuncio.fromJson(jsonEncode(dado));
+        Anuncio anuncio = Anuncio.fromJson(
+            jsonEncode(dado, toEncodable: FilterEncodeJson.tratarData));
         anuncios.add(anuncio);
       }
     }
     return anuncios;
+  }
+
+  getAnuncios({
+    required Function(QuerySnapshot) fn,
+    String? regiao,
+    String? categoria,
+  }) {
+    Query query =
+        _db.collection(collection).orderBy('created_at', descending: true);
+
+    if (regiao != null) {
+      query = query.where('estado', isEqualTo: regiao);
+    }
+    if (categoria != null) {
+      query = query.where('categoria', isEqualTo: categoria);
+    }
+
+    Stream<QuerySnapshot> stream = query.snapshots();
+    stream.listen((event) {
+      fn(event);
+    });
   }
 }

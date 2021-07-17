@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:olx_tequila/core/AppColors.dart';
 import 'package:olx_tequila/models/Anuncio.dart';
 import 'package:olx_tequila/services/AnuncioService.dart';
+import 'package:olx_tequila/utils/AuxFunction.dart';
 import 'package:olx_tequila/views/anuncios/widgets/CardAnuncioWidget.dart';
 
 class MeusAnunciosWidget extends StatefulWidget {
@@ -20,13 +20,25 @@ class _MeusAnunciosWidgetState extends State<MeusAnunciosWidget> {
   List<Anuncio> anuncios = [];
 
   Future<void> _preencherMeusAnuncios() async {
-    List<Anuncio> anuncs = await _service.getMeusAnuncios();
-    _controller.add(anuncs);
-    print(this._controller.stream.length);
+    this.anuncios = await _service.getMeusAnuncios();
+    _controller.add(this.anuncios);
   }
 
   void refreshData() {
     _preencherMeusAnuncios();
+  }
+
+  void removeAnuncio(Anuncio anuncio) async {
+    bool result = await _service.remove(anuncio);
+    if (result) {
+      for (var i = 0; i < this.anuncios.length; i++) {
+        if (this.anuncios[i].id == anuncio.id) {
+          this.anuncios.remove(anuncio);
+          break;
+        }
+      }
+      this._controller.add(this.anuncios);
+    }
   }
 
   @override
@@ -53,7 +65,7 @@ class _MeusAnunciosWidgetState extends State<MeusAnunciosWidget> {
         child: Icon(Icons.add),
         onPressed: () {
           Navigator.pushNamed(context, '/novo-anuncio',
-              arguments: {'function': refreshData});
+              arguments: AuxFunction(voidCallback: refreshData));
         },
       ),
       body: streamBuilderWidget(),
@@ -77,6 +89,7 @@ class _MeusAnunciosWidgetState extends State<MeusAnunciosWidget> {
               itemBuilder: (_, index) {
                 return CardAnuncioWidget(
                   anuncio: snapshot.data[index],
+                  onPressedRemove: this.removeAnuncio,
                 );
               },
             );

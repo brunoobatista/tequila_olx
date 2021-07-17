@@ -6,10 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:olx_tequila/core/AppPadding.dart';
 import 'package:olx_tequila/models/Anuncio.dart';
-import 'package:olx_tequila/models/Categoria.dart';
-import 'package:olx_tequila/repositories/FirebaseDBRepository.dart';
 import 'package:olx_tequila/services/AnuncioService.dart';
+import 'package:olx_tequila/utils/AuxFunction.dart';
 import 'package:olx_tequila/utils/Converter.dart';
+import 'package:olx_tequila/utils/InitDropdown.dart';
 import 'package:olx_tequila/utils/validators/RequiredValidatorCustomObject.dart';
 import 'package:olx_tequila/views/anuncios/widgets/ListViewCustomWidget.dart';
 import 'package:olx_tequila/views/widgets/BtnElevetedCustomWidget.dart';
@@ -17,10 +17,14 @@ import 'package:olx_tequila/views/widgets/DropdownCustomWidget.dart';
 import 'package:olx_tequila/views/widgets/TextFormFieldCustomWidget.dart';
 
 class NovoAnuncioWidget extends StatefulWidget {
-  Function? function;
-  NovoAnuncioWidget({Key? key, Object? obj}) {
-    final args = obj as Map;
-    this.function = args['function'];
+  final AuxFunction functionAux = AuxFunction(voidCallback: () {});
+  NovoAnuncioWidget({Key? key, Object? function}) {
+    AuxFunction aux = function as AuxFunction;
+    if (aux.voidCallback is Function) {
+      this.functionAux.setNewFn(aux.currentFn);
+    }
+    // var args = this.functionAux as Map;
+    // this.function = args['function'];
   }
 
   @override
@@ -30,9 +34,9 @@ class NovoAnuncioWidget extends StatefulWidget {
 class _NovoAnuncioWidgetState extends State<NovoAnuncioWidget> {
   final _formKey = GlobalKey<FormState>();
   final List<File> _listImages = [];
-  final List<DropdownMenuItem<String>> _estadosDropItens = [];
-  final List<DropdownMenuItem<String>> _categoriaDropItens = [];
-  final FirebaseDBRepository firebaseRepository = FirebaseDBRepository();
+  List<DropdownMenuItem<String>> _estadosDropItens = [];
+  List<DropdownMenuItem<String>> _categoriaDropItens = [];
+  final InitDropdown _initDropdown = InitDropdown();
 
   final AnuncioService _anuncioService = AnuncioService();
   final anuncio = Anuncio();
@@ -40,28 +44,11 @@ class _NovoAnuncioWidgetState extends State<NovoAnuncioWidget> {
   String? _currentValueEstado;
   String? _currentValueCategoria;
 
-  _initEstados() {
-    Estados.listaEstadosSigla.asMap().forEach((key, value) {
-      _estadosDropItens.add(
-        DropdownMenuItem(
-          child: Text(value),
-          value: value,
-        ),
-      );
-    });
-  }
-
-  _initCategorias() async {
-    List<Categoria> categorias = await firebaseRepository.getCategorias();
+  _initDrops() async {
+    var cats = await this._initDropdown.initCategorias();
     setState(() {
-      categorias.asMap().forEach((key, categoria) {
-        _categoriaDropItens.add(
-          DropdownMenuItem(
-            child: Text(categoria.label),
-            value: categoria.value,
-          ),
-        );
-      });
+      this._estadosDropItens = this._initDropdown.initEstados();
+      this._categoriaDropItens = cats;
     });
   }
 
@@ -73,15 +60,20 @@ class _NovoAnuncioWidgetState extends State<NovoAnuncioWidget> {
     await _anuncioService.create(anuncio, _listImages).then((value) {
       // novoAnuncio = value;
       Navigator.pop(context);
-      widget.function!();
+      widget.functionAux.voidCallback!();
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _initEstados();
-    _initCategorias();
+    _initDrops();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
@@ -185,8 +177,6 @@ class _NovoAnuncioWidgetState extends State<NovoAnuncioWidget> {
                     ],
                     // controller: _tituloController,
                     onSaved: (value) {
-                      print(value);
-                      print(Converter.fromBRLToDouble(value!));
                       anuncio.preco = value;
                     },
                     validator:

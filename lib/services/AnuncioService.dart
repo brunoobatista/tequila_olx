@@ -36,6 +36,21 @@ class AnuncioService {
     return anuncio;
   }
 
+  Future<bool> remove(Anuncio anuncio) async {
+    UserTequila user = await auth.getCurrentUser();
+    await _repository.remove(anuncio, user.id);
+
+    return true;
+  }
+
+  getAnuncios({
+    required Function(QuerySnapshot) fn,
+    String? regiao,
+    String? categoria,
+  }) async {
+    await _repository.getAnuncios(fn: fn, regiao: regiao, categoria: categoria);
+  }
+
   Future<List<Anuncio>> getMeusAnuncios() async {
     UserTequila user = await auth.getCurrentUser();
     List<Anuncio> anuncios =

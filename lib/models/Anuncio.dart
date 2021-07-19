@@ -29,7 +29,7 @@ class Anuncio implements Model {
     this._estado = estado;
     this._categoria = categoria;
     this._titulo = titulo;
-    if (preco.runtimeType != double) preco = Converter.fromBRLToDouble(preco);
+    if (preco.runtimeType == String) preco = Converter.fromBRLToDouble(preco);
     this._preco = preco;
     this._telefone = telefone;
     this._descricao = descricao;

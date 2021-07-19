@@ -8,12 +8,10 @@ import 'package:olx_tequila/views/widgets/ShowPickerWidget.dart';
 
 class ListViewCustomWidget extends StatefulWidget {
   final List<File> listImages;
-  final VoidCallback onTap;
 
   ListViewCustomWidget({
     Key? key,
     required this.listImages,
-    required this.onTap,
   }) : super(key: key);
 
   @override
@@ -47,30 +45,6 @@ class _ListViewCustomWidgetState extends State<ListViewCustomWidget> {
     setState(() {
       this.widget.listImages.remove(image);
     });
-  }
-
-  Future<dynamic> _removeImagea(context, index) {
-    return showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.file(this.widget.listImages[index]),
-            NextButtonWidget(
-              label: 'Excluir',
-              backgroundColor: Colors.transparent,
-              borderColor: Colors.transparent,
-              fontColor: Colors.red,
-              onTap: () {
-                _removeImage(index);
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   @override

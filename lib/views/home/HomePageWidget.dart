@@ -180,7 +180,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                 ],
               ),
               Container(
-                child: this.streamBuilderWidget(),
+                child: this.streamBuilderWidget(context),
               )
             ],
           ),
@@ -189,12 +189,12 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     );
   }
 
-  teste(Anuncio anuncio) {
-    print('^%%%%%%%%%%%%%%%%%%%%%%%%');
-    print(anuncio.toString());
+  teste(BuildContext context, Anuncio anuncio) {
+    anuncio.runtimeType;
+    Navigator.pushNamed(context, '/anuncio', arguments: anuncio);
   }
 
-  Widget streamBuilderWidget() {
+  Widget streamBuilderWidget(BuildContext context) {
     return StreamBuilder(
       stream: _controller.stream,
       builder: (context, AsyncSnapshot snapshot) {

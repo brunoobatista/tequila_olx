@@ -21,22 +21,21 @@ class DropdownCustomWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Padding(
-        padding: EdgeInsets.all(AppPadding.all8),
-        child: DropdownButtonFormField<dynamic>(
-          hint: Text(this.hint),
-          style: TextStyle(color: Colors.black, fontSize: 20),
-          value: this.currentValue,
-          items: this.menuItens,
-          validator: this.validator,
-          onChanged: (value) {
-            this.onChange(value);
-          },
-          onSaved: (value) {
-            this.onSaved(value);
-          },
-        ),
+    return Padding(
+      padding: EdgeInsets.all(AppPadding.all8),
+      child: DropdownButtonFormField<dynamic>(
+        hint: Text(this.hint),
+        style: TextStyle(color: Colors.black, fontSize: 20),
+        value: this.currentValue,
+        items: this.menuItens,
+        validator: this.validator,
+        onChanged: (value) {
+          this.onChange(value);
+        },
+        onSaved: (value) {
+          this.onSaved(value);
+        },
+        isExpanded: true,
       ),
     );
   }

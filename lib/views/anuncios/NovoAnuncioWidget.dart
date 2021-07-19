@@ -34,9 +34,9 @@ class NovoAnuncioWidget extends StatefulWidget {
 class _NovoAnuncioWidgetState extends State<NovoAnuncioWidget> {
   final _formKey = GlobalKey<FormState>();
   final List<File> _listImages = [];
+  final InitDropdown _initDropdown = InitDropdown();
   List<DropdownMenuItem<String>> _estadosDropItens = [];
   List<DropdownMenuItem<String>> _categoriaDropItens = [];
-  final InitDropdown _initDropdown = InitDropdown();
 
   final AnuncioService _anuncioService = AnuncioService();
   final anuncio = Anuncio();
@@ -103,12 +103,11 @@ class _NovoAnuncioWidgetState extends State<NovoAnuncioWidget> {
                     return Column(
                       children: [
                         Container(
-                            height: 100,
-                            child: ListViewCustomWidget(
-                                listImages: _listImages,
-                                onTap: () {
-                                  print('tasd asd');
-                                })),
+                          height: 100,
+                          child: ListViewCustomWidget(
+                            listImages: _listImages,
+                          ),
+                        ),
                         if (state.hasError)
                           Container(
                             child: Text(
@@ -122,35 +121,39 @@ class _NovoAnuncioWidgetState extends State<NovoAnuncioWidget> {
                 ),
                 Row(
                   children: [
-                    DropdownCustomWidget(
-                      hint: 'Estado',
-                      menuItens: _estadosDropItens,
-                      currentValue: _currentValueEstado,
-                      onChange: (currentValue) {
-                        setState(() {
-                          _currentValueEstado = currentValue;
-                        });
-                      },
-                      onSaved: (value) {
-                        anuncio.estado = value;
-                      },
-                      validator: RequiredValidatorCustomObject(
-                          errorText: 'Campo obrigatório'),
+                    Expanded(
+                      child: DropdownCustomWidget(
+                        hint: 'Estado',
+                        menuItens: _estadosDropItens,
+                        currentValue: _currentValueEstado,
+                        onChange: (currentValue) {
+                          setState(() {
+                            _currentValueEstado = currentValue;
+                          });
+                        },
+                        onSaved: (value) {
+                          anuncio.estado = value;
+                        },
+                        validator: RequiredValidatorCustomObject(
+                            errorText: 'Campo obrigatório'),
+                      ),
                     ),
-                    DropdownCustomWidget(
-                      hint: 'Categoria',
-                      menuItens: _categoriaDropItens,
-                      currentValue: _currentValueCategoria,
-                      onChange: (currentValue) {
-                        setState(() {
-                          _currentValueCategoria = currentValue;
-                        });
-                      },
-                      onSaved: (value) {
-                        anuncio.categoria = value;
-                      },
-                      validator: RequiredValidatorCustomObject(
-                          errorText: 'Campo obrigatório'),
+                    Expanded(
+                      child: DropdownCustomWidget(
+                        hint: 'Categoria',
+                        menuItens: _categoriaDropItens,
+                        currentValue: _currentValueCategoria,
+                        onChange: (currentValue) {
+                          setState(() {
+                            _currentValueCategoria = currentValue;
+                          });
+                        },
+                        onSaved: (value) {
+                          anuncio.categoria = value;
+                        },
+                        validator: RequiredValidatorCustomObject(
+                            errorText: 'Campo obrigatório'),
+                      ),
                     ),
                   ],
                 ),

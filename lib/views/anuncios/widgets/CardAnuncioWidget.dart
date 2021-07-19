@@ -6,7 +6,7 @@ import 'package:olx_tequila/utils/Converter.dart';
 class CardAnuncioWidget extends StatelessWidget {
   final Anuncio anuncio;
   final Function(Anuncio)? onPressedRemove;
-  final Function(Anuncio)? onTapItem;
+  final Function(BuildContext, Anuncio)? onTapItem;
   const CardAnuncioWidget(
       {Key? key, required this.anuncio, this.onPressedRemove, this.onTapItem})
       : super(key: key);
@@ -15,7 +15,7 @@ class CardAnuncioWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (this.onTapItem != null) this.onTapItem!(this.anuncio);
+        if (this.onTapItem != null) this.onTapItem!(context, this.anuncio);
       },
       child: Card(
         child: Padding(

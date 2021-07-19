@@ -59,10 +59,12 @@ class _MeusAnunciosWidgetState extends State<MeusAnunciosWidget> {
       appBar: AppBar(
         title: Text('Meus anúncios'),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        label: Text('Adicionar'),
         backgroundColor: AppColors.sDeepPurple,
         foregroundColor: AppColors.pText,
-        child: Icon(Icons.add),
+        icon: Icon(Icons.add),
         onPressed: () {
           Navigator.pushNamed(context, '/novo-anuncio',
               arguments: AuxFunction(voidCallback: refreshData));
